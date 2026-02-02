@@ -1,0 +1,9 @@
+{
+  "ntfy_topic": "fiscal",
+  "ntfy_server": "http://your-server-ip:80",
+  "ntfy_user": "your-username",
+  "ntfy_pass": "your-password",
+  "check_interval_hours": 12,
+  "days_before_alert": [7, 3, 1, 0]
+}
+

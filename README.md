@@ -64,7 +64,14 @@ NTFY_TOPIC=meu-topico ./fiscal-reminders
 
 ## Configuração
 
-Editar `config.json`:
+Copiar o exemplo e editar:
+
+```bash
+cp config.example.json config.json
+nano config.json
+```
+
+Exemplo `config.json`:
 
 ```json
 {
