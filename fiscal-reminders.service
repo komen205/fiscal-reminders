@@ -1,0 +1,28 @@
+[Unit]
+Description=Fiscal Reminders - Portuguese Tax Deadline Notifications
+After=network.target
+
+[Service]
+Type=simple
+User=fiscal-reminders
+Group=fiscal-reminders
+WorkingDirectory=/opt/fiscal-reminders
+ExecStart=/opt/fiscal-reminders/fiscal-reminders
+Restart=always
+RestartSec=10
+
+# Environment
+Environment=TZ=Europe/Lisbon
+Environment=NTFY_TOPIC=fiscal-reminders
+Environment=NTFY_SERVER=https://ntfy.sh
+
+# Security
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+ReadOnlyPaths=/
+ReadWritePaths=/opt/fiscal-reminders
+
+[Install]
+WantedBy=multi-user.target
+
