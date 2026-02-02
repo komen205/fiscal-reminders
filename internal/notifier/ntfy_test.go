@@ -6,15 +6,17 @@ import (
 	"time"
 
 	"github.com/komen205/fiscal-reminders/internal/config"
-	"github.com/komen205/fiscal-reminders/internal/deadline"
 )
 
 func TestNtfy_buildMessage_Today(t *testing.T) {
 	n := New(&config.Config{})
-	d := deadline.Deadline{Description: "Test deadline"}
-	deadlineDate := time.Now()
+	notif := Notification{
+		Description: "Test deadline",
+		DaysUntil:   0,
+		Deadline:    time.Now(),
+	}
 
-	msg := n.buildMessage(d, 0, deadlineDate)
+	msg := n.buildMessage(notif)
 
 	if !strings.Contains(msg, "HOJE") {
 		t.Error("message should contain 'HOJE' for 0 days")
@@ -23,10 +25,13 @@ func TestNtfy_buildMessage_Today(t *testing.T) {
 
 func TestNtfy_buildMessage_Tomorrow(t *testing.T) {
 	n := New(&config.Config{})
-	d := deadline.Deadline{Description: "Test deadline"}
-	deadlineDate := time.Now().AddDate(0, 0, 1)
+	notif := Notification{
+		Description: "Test deadline",
+		DaysUntil:   1,
+		Deadline:    time.Now().AddDate(0, 0, 1),
+	}
 
-	msg := n.buildMessage(d, 1, deadlineDate)
+	msg := n.buildMessage(notif)
 
 	if !strings.Contains(msg, "AMANHÃ") {
 		t.Error("message should contain 'AMANHÃ' for 1 day")
@@ -35,10 +40,13 @@ func TestNtfy_buildMessage_Tomorrow(t *testing.T) {
 
 func TestNtfy_buildMessage_Days(t *testing.T) {
 	n := New(&config.Config{})
-	d := deadline.Deadline{Description: "Test deadline"}
-	deadlineDate := time.Now().AddDate(0, 0, 7)
+	notif := Notification{
+		Description: "Test deadline",
+		DaysUntil:   7,
+		Deadline:    time.Now().AddDate(0, 0, 7),
+	}
 
-	msg := n.buildMessage(d, 7, deadlineDate)
+	msg := n.buildMessage(notif)
 
 	if !strings.Contains(msg, "7 dias") {
 		t.Error("message should contain '7 dias'")
@@ -62,3 +70,49 @@ func TestNew(t *testing.T) {
 	}
 }
 
+func TestHasTag(t *testing.T) {
+	tags := []string{"iva", "trimestral"}
+
+	if !hasTag(tags, "iva") {
+		t.Error("should find 'iva' tag")
+	}
+
+	if !hasTag(tags, "trimestral") {
+		t.Error("should find 'trimestral' tag")
+	}
+
+	if hasTag(tags, "irs") {
+		t.Error("should not find 'irs' tag")
+	}
+
+	if hasTag(nil, "anything") {
+		t.Error("nil tags should return false")
+	}
+
+	if hasTag([]string{}, "anything") {
+		t.Error("empty tags should return false")
+	}
+}
+
+func TestNotification_Fields(t *testing.T) {
+	notif := Notification{
+		Name:        "Test",
+		Description: "Test description",
+		Priority:    "high",
+		Tags:        []string{"test"},
+		DaysUntil:   5,
+		Deadline:    time.Now().AddDate(0, 0, 5),
+	}
+
+	if notif.Name != "Test" {
+		t.Error("name not set")
+	}
+
+	if notif.Priority != "high" {
+		t.Error("priority not set")
+	}
+
+	if len(notif.Tags) != 1 {
+		t.Error("tags not set")
+	}
+}

@@ -1,0 +1,9 @@
+blank_issues_enabled: true
+contact_links:
+  - name: 💬 Discussões / Questions
+    url: https://github.com/komen205/fiscal-reminders/discussions
+    about: Para questões gerais, ideias, ou ajuda com configuração
+  - name: 📖 Documentação
+    url: https://github.com/komen205/fiscal-reminders#readme
+    about: Lê o README primeiro - pode ter a resposta!
+

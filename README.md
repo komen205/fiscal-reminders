@@ -194,6 +194,12 @@ Contribuições são bem-vindas! Vê [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ---
 
+## ⚠️ Disclosure
+
+This project was vibe-coded with AI. Use at your own risk.
+
+---
+
 <p align="center">
   Feito com ❤️ em 🇵🇹 Portugal
 </p>

@@ -67,7 +67,14 @@ func (c *Checker) checkAndNotify(d Deadline, now time.Time, deadlineDate time.Ti
 
 	for _, alertDay := range c.config.DaysBeforeAlert {
 		if daysUntil == alertDay {
-			c.notifier.Send(d, daysUntil, deadlineDate)
+			c.notifier.Send(notifier.Notification{
+				Name:        d.Name,
+				Description: d.Description,
+				Priority:    d.Priority,
+				Tags:        d.Tags,
+				DaysUntil:   daysUntil,
+				Deadline:    deadlineDate,
+			})
 			break
 		}
 	}
@@ -77,4 +84,3 @@ func (c *Checker) checkAndNotify(d Deadline, now time.Time, deadlineDate time.Ti
 func DaysUntil(deadline time.Time) int {
 	return int(time.Until(deadline).Hours() / 24)
 }
-
