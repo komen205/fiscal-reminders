@@ -1,77 +1,95 @@
 # 🔔 Fiscal Reminders
 
-Notificações automáticas para prazos fiscais portugueses via [ntfy.sh](https://ntfy.sh).
+[![Go](https://img.shields.io/badge/Go-1.21+-00ADD8?style=flat&logo=go&logoColor=white)](https://go.dev/)
+[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=flat&logo=docker&logoColor=white)](https://www.docker.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![CI](https://github.com/komen205/fiscal-reminders/actions/workflows/ci.yml/badge.svg)](https://github.com/komen205/fiscal-reminders/actions/workflows/ci.yml)
 
-## Prazos Monitorizados
+> 🇵🇹 Notificações automáticas para prazos fiscais portugueses via [ntfy.sh](https://ntfy.sh)
+
+**Nunca mais percas um prazo fiscal!** Recebe alertas automáticos no telemóvel dias antes de cada deadline.
+
+---
+
+## 🎯 Para Quem?
+
+- 👨‍💻 **Freelancers** e trabalhadores independentes
+- 🏢 **ENI** (Empresário em Nome Individual)
+- 📊 **Contabilistas** que gerem múltiplos clientes
+- 🇵🇹 Qualquer pessoa com obrigações fiscais em Portugal
+
+## 📅 Prazos Monitorizados
 
 ### Declaração Trimestral Segurança Social
-| Trimestre | Prazo |
-|-----------|-------|
-| Out-Dez | 31 Janeiro |
-| Jan-Mar | 30 Abril |
-| Abr-Jun | 31 Julho |
-| Jul-Set | 31 Outubro |
+
+| Trimestre | Período | Prazo |
+|-----------|---------|-------|
+| Q4 | Out-Dez | 31 Janeiro |
+| Q1 | Jan-Mar | 30 Abril |
+| Q2 | Abr-Jun | 31 Julho |
+| Q3 | Jul-Set | 31 Outubro |
 
 ### IVA Trimestral
-| Trimestre | Prazo |
-|-----------|-------|
-| 1º (Jan-Mar) | 20 Maio |
-| 2º (Abr-Jun) | 20 Agosto |
-| 3º (Jul-Set) | 20 Novembro |
-| 4º (Out-Dez) | 20 Fevereiro |
+
+| Trimestre | Período | Prazo |
+|-----------|---------|-------|
+| 1º | Jan-Mar | 20 Maio |
+| 2º | Abr-Jun | 20 Agosto |
+| 3º | Jul-Set | 20 Novembro |
+| 4º | Out-Dez | 20 Fevereiro |
 
 ### Outros
-- **Pagamento SegSoc**: Dia 20 de cada mês
-- **IRS Anual**: 1 Abril - 30 Junho
 
-## Instalação
+| Obrigação | Prazo |
+|-----------|-------|
+| 💰 Pagamento SegSoc | Dia 20 de cada mês |
+| 📝 IRS Anual | 1 Abril - 30 Junho |
 
-### Opção 1: Docker (recomendado)
+## 🚀 Quick Start
+
+### Docker (recomendado)
 
 ```bash
-# Clonar repositório
-git clone https://github.com/seu-user/fiscal-reminders.git
+docker run -d \
+  --name fiscal-reminders \
+  --restart unless-stopped \
+  -e NTFY_TOPIC=meu-topico-secreto \
+  ghcr.io/komen205/fiscal-reminders:latest
+```
+
+### Docker Compose
+
+```bash
+git clone https://github.com/komen205/fiscal-reminders.git
 cd fiscal-reminders
 
-# Configurar tópico ntfy (opcional)
+# Editar tópico ntfy
 export NTFY_TOPIC="meu-topico-privado"
 
-# Executar
 docker-compose up -d
 ```
 
-### Opção 2: Systemd
+### Systemd (Linux)
 
 ```bash
-# Clonar e construir
-git clone https://github.com/seu-user/fiscal-reminders.git
+git clone https://github.com/komen205/fiscal-reminders.git
 cd fiscal-reminders
 go build -o fiscal-reminders .
-
-# Instalar (requer root)
 sudo ./install.sh
 ```
 
-### Opção 3: Manual
+### Manual
 
 ```bash
-# Construir
 go build -o fiscal-reminders .
-
-# Executar
 NTFY_TOPIC=meu-topico ./fiscal-reminders
 ```
 
-## Configuração
-
-Copiar o exemplo e editar:
+## ⚙️ Configuração
 
 ```bash
 cp config.example.json config.json
-nano config.json
 ```
-
-Exemplo `config.json`:
 
 ```json
 {
@@ -82,38 +100,78 @@ Exemplo `config.json`:
 }
 ```
 
-| Campo | Descrição |
-|-------|-----------|
-| `ntfy_topic` | Nome do tópico ntfy |
-| `ntfy_server` | Servidor ntfy (self-hosted ou ntfy.sh) |
-| `check_interval_hours` | Frequência de verificação |
-| `days_before_alert` | Dias antes do prazo para alertar |
+| Campo | Descrição | Default |
+|-------|-----------|---------|
+| `ntfy_topic` | Nome do tópico ntfy | `fiscal-reminders` |
+| `ntfy_server` | Servidor ntfy | `https://ntfy.sh` |
+| `check_interval_hours` | Frequência verificação (horas) | `12` |
+| `days_before_alert` | Dias antes para alertar | `[7, 3, 1, 0]` |
 
-## Receber Notificações
+## 📱 Receber Notificações
 
-### App Móvel
-1. Instalar app ntfy ([Android](https://play.google.com/store/apps/details?id=io.heckel.ntfy) / [iOS](https://apps.apple.com/app/ntfy/id1625396347))
-2. Subscrever ao tópico: `fiscal-reminders`
+### 1. Instalar App
 
-### Browser
-Abrir: https://ntfy.sh/fiscal-reminders
+- [Android (Play Store)](https://play.google.com/store/apps/details?id=io.heckel.ntfy)
+- [iOS (App Store)](https://apps.apple.com/app/ntfy/id1625396347)
+- [F-Droid](https://f-droid.org/packages/io.heckel.ntfy/)
 
-### CLI
+### 2. Subscrever Tópico
+
+Abre a app → "+" → Introduz o teu tópico (ex: `fiscal-reminders`)
+
+### 3. Alternativas
+
 ```bash
-ntfy subscribe fiscal-reminders
+# Browser
+open https://ntfy.sh/SEU-TOPICO
+
+# CLI
+ntfy subscribe SEU-TOPICO
+
+# cURL
+curl -s ntfy.sh/SEU-TOPICO/json
 ```
 
-## Self-Hosted ntfy
-
-Se tiveres o teu próprio servidor ntfy:
+## 🏠 Self-Hosted ntfy
 
 ```bash
 export NTFY_SERVER=https://ntfy.meudominio.pt
-export NTFY_TOPIC=fiscal
+export NTFY_TOPIC=fiscal-privado
 docker-compose up -d
 ```
 
-## Licença
+## 🗺️ Roadmap
 
-MIT
+- [ ] 📱 Integração Telegram
+- [ ] 💬 Integração Discord  
+- [ ] 📅 Export iCal (.ics)
+- [ ] 🌐 Interface web com dashboard
+- [ ] 🇧🇷 Suporte prazos Brasil
+- [ ] 🔔 Notificações push nativas
+- [ ] 📊 Histórico de notificações
+
+## 🤝 Contribuir
+
+Contribuições são bem-vindas! Vê [CONTRIBUTING.md](CONTRIBUTING.md).
+
+```bash
+git clone https://github.com/komen205/fiscal-reminders.git
+cd fiscal-reminders
+go test ./...
+go run main.go
+```
+
+## 📄 Licença
+
+[MIT](LICENSE) - usa livremente!
+
+## ⭐ Star History
+
+Se este projeto te é útil, considera dar uma ⭐!
+
+---
+
+<p align="center">
+  Feito com ❤️ em 🇵🇹 Portugal
+</p>
 
