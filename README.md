@@ -45,6 +45,24 @@
 | 💰 Pagamento SegSoc | Dia 20 de cada mês |
 | 📝 IRS Anual | 1 Abril - 30 Junho |
 
+## 📁 Project Structure
+
+```
+fiscal-reminders/
+├── cmd/
+│   └── fiscal-reminders/     # Application entry point
+├── internal/
+│   ├── config/               # Configuration loading
+│   ├── deadline/             # Deadline definitions & checker
+│   └── notifier/             # ntfy notification sender
+├── deployments/
+│   ├── docker/               # Dockerfile & docker-compose
+│   └── systemd/              # Systemd service file
+├── scripts/                  # Installation scripts
+├── configs/                  # Configuration examples
+└── .github/workflows/        # CI/CD
+```
+
 ## 🚀 Quick Start
 
 ### Docker (recomendado)
@@ -63,10 +81,20 @@ docker run -d \
 git clone https://github.com/komen205/fiscal-reminders.git
 cd fiscal-reminders
 
-# Editar tópico ntfy
 export NTFY_TOPIC="meu-topico-privado"
+docker-compose -f deployments/docker/docker-compose.yml up -d
+```
 
-docker-compose up -d
+### Make (desenvolvimento)
+
+```bash
+git clone https://github.com/komen205/fiscal-reminders.git
+cd fiscal-reminders
+
+make build     # Compila
+make run       # Executa
+make test      # Testes
+make help      # Ver todos os comandos
 ```
 
 ### Systemd (Linux)
@@ -74,21 +102,13 @@ docker-compose up -d
 ```bash
 git clone https://github.com/komen205/fiscal-reminders.git
 cd fiscal-reminders
-go build -o fiscal-reminders .
-sudo ./install.sh
-```
-
-### Manual
-
-```bash
-go build -o fiscal-reminders .
-NTFY_TOPIC=meu-topico ./fiscal-reminders
+sudo ./scripts/install.sh
 ```
 
 ## ⚙️ Configuração
 
 ```bash
-cp config.example.json config.json
+cp configs/config.example.json config.json
 ```
 
 ```json
@@ -107,6 +127,15 @@ cp config.example.json config.json
 | `check_interval_hours` | Frequência verificação (horas) | `12` |
 | `days_before_alert` | Dias antes para alertar | `[7, 3, 1, 0]` |
 
+### Environment Variables
+
+```bash
+NTFY_TOPIC=meu-topico
+NTFY_SERVER=https://ntfy.sh
+NTFY_USER=username        # opcional, para auth
+NTFY_PASS=password        # opcional, para auth
+```
+
 ## 📱 Receber Notificações
 
 ### 1. Instalar App
@@ -119,25 +148,30 @@ cp config.example.json config.json
 
 Abre a app → "+" → Introduz o teu tópico (ex: `fiscal-reminders`)
 
-### 3. Alternativas
+## 🛠️ Development
 
 ```bash
-# Browser
-open https://ntfy.sh/SEU-TOPICO
+# Clone
+git clone https://github.com/komen205/fiscal-reminders.git
+cd fiscal-reminders
 
-# CLI
-ntfy subscribe SEU-TOPICO
+# Build
+make build
 
-# cURL
-curl -s ntfy.sh/SEU-TOPICO/json
-```
+# Run tests
+make test
 
-## 🏠 Self-Hosted ntfy
+# Run with coverage
+make test-cover
 
-```bash
-export NTFY_SERVER=https://ntfy.meudominio.pt
-export NTFY_TOPIC=fiscal-privado
-docker-compose up -d
+# Format code
+make fmt
+
+# Lint
+make lint
+
+# Build all platforms
+make build-all
 ```
 
 ## 🗺️ Roadmap
@@ -154,24 +188,12 @@ docker-compose up -d
 
 Contribuições são bem-vindas! Vê [CONTRIBUTING.md](CONTRIBUTING.md).
 
-```bash
-git clone https://github.com/komen205/fiscal-reminders.git
-cd fiscal-reminders
-go test ./...
-go run main.go
-```
-
 ## 📄 Licença
 
 [MIT](LICENSE) - usa livremente!
-
-## ⭐ Star History
-
-Se este projeto te é útil, considera dar uma ⭐!
 
 ---
 
 <p align="center">
   Feito com ❤️ em 🇵🇹 Portugal
 </p>
-

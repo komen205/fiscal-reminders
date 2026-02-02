@@ -4,25 +4,22 @@ After=network.target
 
 [Service]
 Type=simple
-User=fiscal-reminders
-Group=fiscal-reminders
-WorkingDirectory=/opt/fiscal-reminders
-ExecStart=/opt/fiscal-reminders/fiscal-reminders
-Restart=always
+User=nobody
+Group=nogroup
+WorkingDirectory=/var/lib/fiscal-reminders
+ExecStart=/usr/local/bin/fiscal-reminders
+Restart=on-failure
 RestartSec=10
 
 # Environment
-Environment=TZ=Europe/Lisbon
 Environment=NTFY_TOPIC=fiscal-reminders
 Environment=NTFY_SERVER=https://ntfy.sh
 
 # Security
-NoNewPrivileges=yes
+NoNewPrivileges=true
 ProtectSystem=strict
-ProtectHome=yes
-ReadOnlyPaths=/
-ReadWritePaths=/opt/fiscal-reminders
+ProtectHome=true
+PrivateTmp=true
 
 [Install]
 WantedBy=multi-user.target
-

@@ -2,13 +2,14 @@ version: '3.8'
 
 services:
   fiscal-reminders:
-    build: .
+    build:
+      context: ../..
+      dockerfile: deployments/docker/Dockerfile
     container_name: fiscal-reminders
     restart: unless-stopped
     environment:
-      - TZ=Europe/Lisbon
       - NTFY_TOPIC=${NTFY_TOPIC:-fiscal-reminders}
       - NTFY_SERVER=${NTFY_SERVER:-https://ntfy.sh}
+      - TZ=Europe/Lisbon
     volumes:
       - ./config.json:/app/config.json:ro
-
