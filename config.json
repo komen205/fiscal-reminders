@@ -1,7 +1,0 @@
-{
-  "ntfy_topic": "fiscal-reminders",
-  "ntfy_server": "https://ntfy.sh",
-  "check_interval_hours": 12,
-  "days_before_alert": [7, 3, 1, 0]
-}
-
