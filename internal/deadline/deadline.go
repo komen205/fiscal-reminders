@@ -1,13 +1,16 @@
 package deadline
 
+import "time"
+
 // Deadline represents a fiscal deadline
 type Deadline struct {
-	Name        string
-	Description string
-	Month       int // 0 = monthly
-	Day         int
-	Priority    string // "urgent", "high", "default"
-	Tags        []string
+	Name                    string
+	Description             string
+	Month                   int // 0 = monthly
+	Day                     int
+	AdjustToNextBusinessDay bool
+	Priority                string // "urgent", "high", "default"
+	Tags                    []string
 }
 
 // All contains all Portuguese fiscal deadlines
@@ -72,13 +75,33 @@ var All = []Deadline{
 		Tags:     []string{"iva", "trimestral"},
 	},
 
-	// Pagamento contribuições SegSoc (mensal)
+	// Pagamentos por conta de IRS
 	{
-		Name:        "💳 Pagamento SegSoc",
-		Description: "Pagar contribuições Segurança Social",
-		Month:       0, Day: 20, // Month 0 = every month
-		Priority: "default",
-		Tags:     []string{"seguranca-social", "pagamento"},
+		Name:                    "💶 IRS - 1.º Pagamento por Conta",
+		Description:             "Efetuar o 1.º pagamento por conta de IRS",
+		Month:                   7,
+		Day:                     20,
+		AdjustToNextBusinessDay: true,
+		Priority:                "high",
+		Tags:                    []string{"irs", "pagamento-por-conta"},
+	},
+	{
+		Name:                    "💶 IRS - 2.º Pagamento por Conta",
+		Description:             "Efetuar o 2.º pagamento por conta de IRS",
+		Month:                   9,
+		Day:                     20,
+		AdjustToNextBusinessDay: true,
+		Priority:                "high",
+		Tags:                    []string{"irs", "pagamento-por-conta"},
+	},
+	{
+		Name:                    "💶 IRS - 3.º Pagamento por Conta",
+		Description:             "Efetuar o 3.º pagamento por conta de IRS",
+		Month:                   12,
+		Day:                     20,
+		AdjustToNextBusinessDay: true,
+		Priority:                "high",
+		Tags:                    []string{"irs", "pagamento-por-conta"},
 	},
 
 	// IRS Anual
@@ -113,3 +136,16 @@ func (d *Deadline) HasTag(tag string) bool {
 	return false
 }
 
+// DateForYear returns the effective deadline date for a given year.
+// Deadlines marked for business-day adjustment move from weekends to Monday.
+func (d *Deadline) DateForYear(year int, location *time.Location) time.Time {
+	date := time.Date(year, time.Month(d.Month), d.Day, 23, 59, 59, 0, location)
+
+	if d.AdjustToNextBusinessDay {
+		for date.Weekday() == time.Saturday || date.Weekday() == time.Sunday {
+			date = date.AddDate(0, 0, 1)
+		}
+	}
+
+	return date
+}

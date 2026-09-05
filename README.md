@@ -42,8 +42,14 @@
 
 | Obrigação | Prazo |
 |-----------|-------|
-| 💰 Pagamento SegSoc | Dia 20 de cada mês |
+| 💶 1.º Pagamento por Conta de IRS | 20 Julho |
+| 💶 2.º Pagamento por Conta de IRS | 20 Setembro |
+| 💶 3.º Pagamento por Conta de IRS | 20 Dezembro |
 | 📝 IRS Anual | 1 Abril - 30 Junho |
+
+Quando o dia 20 coincide com um fim de semana, o pagamento por conta passa para o
+dia útil seguinte. Em 2026, os prazos efetivos são 20 de julho, 21 de setembro e
+21 de dezembro.
 
 ## 📁 Project Structure
 
@@ -126,6 +132,9 @@ cp configs/config.example.json config.json
 | `ntfy_server` | Servidor ntfy | `https://ntfy.sh` |
 | `check_interval_hours` | Frequência verificação (horas) | `12` |
 | `days_before_alert` | Dias antes para alertar | `[7, 3, 1, 0]` |
+
+Com a configuração padrão, cada obrigação gera alertas 7, 3 e 1 dias antes e no
+próprio dia do prazo.
 
 ### Environment Variables
 
