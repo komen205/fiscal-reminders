@@ -35,9 +35,71 @@ func TestDeadline_HasTag(t *testing.T) {
 }
 
 func TestAllDeadlines_Count(t *testing.T) {
-	// Should have at least 10 deadlines defined
-	if len(All) < 10 {
-		t.Errorf("expected at least 10 deadlines, got %d", len(All))
+	if len(All) != 13 {
+		t.Errorf("expected 13 deadlines, got %d", len(All))
+	}
+}
+
+func TestAllDeadlines_IRSPaymentsByAccount(t *testing.T) {
+	wantMonths := map[int]bool{7: false, 9: false, 12: false}
+	found := 0
+
+	for _, d := range All {
+		if !d.HasTag("pagamento-por-conta") {
+			continue
+		}
+
+		found++
+		if d.Day != 20 {
+			t.Errorf("expected statutory day 20 for %s, got %d", d.Name, d.Day)
+		}
+		if !d.AdjustToNextBusinessDay {
+			t.Errorf("expected business-day adjustment for %s", d.Name)
+		}
+		if _, ok := wantMonths[d.Month]; !ok {
+			t.Errorf("unexpected payment month %d", d.Month)
+		} else {
+			wantMonths[d.Month] = true
+		}
+	}
+
+	if found != 3 {
+		t.Fatalf("expected 3 IRS payments by account, got %d", found)
+	}
+	for month, seen := range wantMonths {
+		if !seen {
+			t.Errorf("missing IRS payment for month %d", month)
+		}
+	}
+}
+
+func TestAllDeadlines_NoMonthlySocialSecurityPayment(t *testing.T) {
+	for _, d := range All {
+		if d.IsMonthly() && d.HasTag("seguranca-social") && d.HasTag("pagamento") {
+			t.Errorf("monthly Social Security payment should not be configured: %s", d.Name)
+		}
+	}
+}
+
+func TestDeadline_DateForYearAdjustsIRS2026Weekends(t *testing.T) {
+	location := time.FixedZone("Europe/Lisbon", 0)
+	tests := []struct {
+		name  string
+		month int
+		want  time.Time
+	}{
+		{"July stays on Monday 20", 7, time.Date(2026, time.July, 20, 23, 59, 59, 0, location)},
+		{"September moves from Sunday 20 to Monday 21", 9, time.Date(2026, time.September, 21, 23, 59, 59, 0, location)},
+		{"December moves from Sunday 20 to Monday 21", 12, time.Date(2026, time.December, 21, 23, 59, 59, 0, location)},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			d := Deadline{Month: tt.month, Day: 20, AdjustToNextBusinessDay: true}
+			if got := d.DateForYear(2026, location); !got.Equal(tt.want) {
+				t.Errorf("expected %s, got %s", tt.want, got)
+			}
+		})
 	}
 }
 
@@ -84,4 +146,3 @@ func TestDaysUntil(t *testing.T) {
 		t.Errorf("days until next week should be 6-7, got %d", days)
 	}
 }
-

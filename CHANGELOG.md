@@ -6,6 +6,12 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/).
 
 ## [Unreleased]
 
+### Adicionado
+- Notificações para os três pagamentos por conta de IRS, com ajuste para o dia útil seguinte quando o dia 20 coincide com um fim de semana
+
+### Removido
+- Notificações para o pagamento mensal das contribuições à Segurança Social
+
 ### A Adicionar
 - Integração Telegram
 - Export iCal

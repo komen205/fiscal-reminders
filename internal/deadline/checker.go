@@ -40,11 +40,11 @@ func (c *Checker) checkYearly(d Deadline, now time.Time) {
 	year := now.Year()
 
 	// Calculate deadline date for current year
-	deadlineDate := time.Date(year, time.Month(d.Month), d.Day, 23, 59, 59, 0, now.Location())
+	deadlineDate := d.DateForYear(year, now.Location())
 
 	// If deadline already passed this year, check next year
 	if deadlineDate.Before(now) {
-		deadlineDate = time.Date(year+1, time.Month(d.Month), d.Day, 23, 59, 59, 0, now.Location())
+		deadlineDate = d.DateForYear(year+1, now.Location())
 	}
 
 	c.checkAndNotify(d, now, deadlineDate)
